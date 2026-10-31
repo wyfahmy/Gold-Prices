@@ -1,0 +1,195 @@
+
+:root{
+  --bg:#0c0d10;--card:#15171c;--card2:#1b1e24;--line:#2a2e36;
+  --text:#f6f2e7;--muted:#969aa4;--gold:#ebc25f;--gold2:#f5d783;
+  --ok:#70d49a;--bad:#ff8d96;--warn:#f0c66a;--blue:#a9c8ff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#0c0d10}
+body{
+  color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 50% -8%,rgba(118,89,25,.24),transparent 30%),
+    linear-gradient(#0c0d10,#0b0c0f);
+  -webkit-font-smoothing:antialiased;
+}
+.app{max-width:520px;margin:auto;padding:calc(18px + env(safe-area-inset-top)) 18px calc(28px + env(safe-area-inset-bottom))}
+header{display:flex;align-items:center;justify-content:space-between;margin:7px 3px 24px}
+.brand{font-size:25px;font-weight:900;letter-spacing:-.04em}
+.brand b{color:var(--gold)}
+.live{display:flex;align-items:center;gap:8px;color:#aaaeb7;font-size:12px;font-weight:800;letter-spacing:.08em}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 5px rgba(112,212,154,.09)}
+.hero{border:1px solid var(--line);border-radius:27px;background:rgba(20,22,27,.94);overflow:hidden;box-shadow:0 22px 60px rgba(0,0,0,.28)}
+.market{padding:24px 22px 22px}
+.market+.market{border-top:1px solid var(--line)}
+.row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.country{font-size:13px;font-weight:900;letter-spacing:.08em;color:#a3a6af}
+.pill{font-size:11px;font-weight:900;background:var(--gold);color:#17120a;border-radius:999px;padding:6px 9px}
+.price{font-size:47px;line-height:1.04;font-weight:900;letter-spacing:-.055em;margin-top:16px}
+.unit{font-size:16px;color:var(--muted);font-weight:750;letter-spacing:-.02em}
+.sub{font-size:20px;color:var(--gold2);font-weight:850;margin-top:9px}
+.source{font-size:11px;color:var(--muted);margin-top:12px;line-height:1.4}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.metric{background:var(--card2);border:1px solid var(--line);border-radius:20px;padding:17px 16px;min-height:116px}
+.label{font-size:11px;color:var(--muted);font-weight:900;letter-spacing:.07em;text-transform:uppercase}
+.value{font-size:24px;font-weight:900;letter-spacing:-.035em;margin-top:9px}
+.gold{color:var(--gold2)} .blue{color:var(--blue)}
+.footer{margin-top:14px;border:1px solid var(--line);border-radius:21px;background:rgba(18,20,24,.9);padding:16px}
+.status{font-size:12px;color:var(--muted);line-height:1.5;min-height:38px}
+.status strong{color:var(--text)}
+.actions{display:flex;gap:10px;margin-top:13px}
+button{
+  flex:1;border:0;border-radius:15px;padding:13px 14px;
+  background:var(--gold);color:#17120a;font-size:14px;font-weight:900;cursor:pointer
+}
+button.secondary{background:#242830;color:#e9e9ec;border:1px solid #343942}
+button:disabled{opacity:.55}
+details{margin-top:14px;color:var(--muted);font-size:11px;line-height:1.55}
+summary{font-weight:850;cursor:pointer;color:#b3b6be}
+.diag{margin-top:10px;border-top:1px solid var(--line);padding-top:10px}
+.diag-row{display:flex;justify-content:space-between;gap:10px;margin:6px 0}
+.ok{color:var(--ok)} .bad{color:var(--bad)} .warn{color:var(--warn)}
+.tiny{text-align:center;color:#6f737c;font-size:10px;margin-top:14px}
+.loading{animation:pulse 1.2s infinite ease-in-out}
+@keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
+
+.oz-secondary{
+  margin-top:8px;
+  font-size:13px;
+  color:#b7bac2;
+  font-weight:750;
+  letter-spacing:-.01em;
+}
+.chart-card{
+  margin-top:15px;
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:16px 14px 13px;
+  background:#111318;
+  overflow:hidden;
+}
+.chart-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:10px;
+}
+.chart-title{
+  font-size:12px;
+  color:#aeb1b9;
+  font-weight:900;
+  letter-spacing:.075em;
+}
+.chart-subtitle{
+  margin-top:4px;
+  font-size:10px;
+  line-height:1.35;
+  color:#6f737c;
+}
+.chart-stat{
+  text-align:right;
+  flex:0 0 auto;
+}
+.chart-change{
+  font-size:16px;
+  font-weight:900;
+  letter-spacing:-.025em;
+}
+.chart-change.up{color:var(--gold2)}
+.chart-change.down{color:var(--blue)}
+.chart-change-label{
+  color:#737780;
+  font-size:9px;
+  margin-top:2px;
+}
+.chart-wrap{
+  position:relative;
+  width:100%;
+  height:230px;
+  touch-action:pan-y;
+}
+#goldChart{
+  width:100%;
+  height:100%;
+  display:block;
+  overflow:visible;
+}
+.chart-tooltip{
+  position:absolute;
+  z-index:4;
+  pointer-events:none;
+  min-width:104px;
+  padding:8px 9px;
+  border:1px solid #3a3e47;
+  border-radius:11px;
+  background:rgba(13,15,19,.96);
+  box-shadow:0 8px 24px rgba(0,0,0,.3);
+  font-size:10px;
+  line-height:1.35;
+  color:#aeb1b9;
+  transform:translate(-50%,-110%);
+  white-space:nowrap;
+}
+.chart-tooltip strong{
+  display:block;
+  color:var(--text);
+  font-size:12px;
+}
+.chart-loading{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  text-align:center;
+  color:#777b85;
+  font-size:11px;
+  line-height:1.45;
+  background:#111318;
+  z-index:3;
+}
+.chart-loading.error{
+  color:var(--bad);
+}
+.chart-foot{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  margin-top:7px;
+  font-size:9px;
+  color:#656a73;
+}
+
+
+.range-switch{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:6px;
+  margin:12px 0 10px;
+  padding:4px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#0e1014;
+}
+.range-btn{
+  appearance:none;
+  border:0;
+  border-radius:10px;
+  padding:8px 4px;
+  background:transparent;
+  color:#7d818a;
+  font-size:11px;
+  font-weight:900;
+  min-width:0;
+}
+.range-btn.active{background:#282c33;color:var(--text)}
+.range-btn:active{transform:scale(.98)}
+
+
+[hidden]{display:none!important}
+.notice{padding:12px 14px;margin-bottom:14px;border:1px solid var(--line);border-radius:14px;color:var(--warn);font-size:12px;line-height:1.5}
+.live.stale .dot{background:var(--warn);box-shadow:none}
+button:focus-visible,summary:focus-visible{outline:2px solid var(--gold);outline-offset:3px}

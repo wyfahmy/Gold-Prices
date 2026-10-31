@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0c0d10">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Gold Prices">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>24K Gold — US vs Egypt</title>
+<link rel="stylesheet" href="./assets/app.css">
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand"><b>24K</b> GOLD</div>
+  <div class="live" id="liveIndicator" aria-live="polite"><span class="dot"></span><span id="liveLabel">LOADING</span></div>
+</header>
+
+<div id="connectionNotice" class="notice" role="status" hidden></div>
+<section class="hero">
+  <div class="market">
+    <div class="row">
+      <div class="country">🇺🇸 USA · GLOBAL SPOT</div>
+      <div class="pill">1 GRAM</div>
+    </div>
+    <div class="price" id="usPrice"><span class="loading">—</span> <span class="unit">USD / g</span></div>
+    <div class="oz-secondary" id="usOz">— USD / troy oz</div>
+    <div class="source" id="usSource">International 24K spot</div>
+  </div>
+
+  <div class="market">
+    <div class="row">
+      <div class="country">🇪🇬 EGYPT · LOCAL MARKET</div>
+      <div class="pill">24K</div>
+    </div>
+    <div class="price" id="egPrice"><span class="loading">—</span> <span class="unit">EGP / g</span></div>
+    <div class="sub" id="egUsd">— USD / g</div>
+    <div class="source" id="egSource">iSagha 24K selling price</div>
+  </div>
+</section>
+
+<section class="metrics">
+  <div class="metric">
+    <div class="label">EG Premium</div>
+    <div class="value" id="premium">—</div>
+  </div>
+  <div class="metric">
+    <div class="label">USD / EGP</div>
+    <div class="value" id="fx">—</div>
+  </div>
+</section>
+
+<section class="footer">
+  <div class="status" id="status">Connecting to live sources…</div>
+  <div class="actions">
+    <button id="refresh" onclick="refreshAll()">Refresh</button>
+    <button class="secondary" onclick="toggleDiag()">Diagnostics</button>
+  </div>
+
+
+  <div class="actions"><button id="installApp" class="secondary" hidden>Install App</button><button id="updateApp" class="secondary" hidden>Update available · Reload</button></div>
+  <p id="installHelp" class="source" role="status" hidden></p>
+  <section class="chart-card" id="chartCard">
+    <div class="chart-head">
+      <div>
+        <div class="chart-title" id="chartTitle">GLOBAL GOLD · 6 MONTHS</div>
+        <div class="chart-subtitle" id="chartSubtitle">USD / troy oz · adaptive detail toward today</div>
+      </div>
+      <div class="chart-stat">
+        <div class="chart-change" id="chartChange">—</div>
+        <div class="chart-change-label" id="chartChangeLabel">6M CHANGE</div>
+      </div>
+    </div>
+
+    <div class="range-switch" aria-label="Chart range">
+      <button class="range-btn" data-range="1W" onclick="setChartRange('1W')">1W</button>
+      <button class="range-btn" data-range="1M" onclick="setChartRange('1M')">1M</button>
+      <button class="range-btn" data-range="3M" onclick="setChartRange('3M')">3M</button>
+      <button class="range-btn active" data-range="6M" onclick="setChartRange('6M')">6M</button>
+    </div>
+
+    <div class="chart-wrap" id="chartWrap">
+      <svg id="goldChart"
+           viewBox="0 0 340 230"
+           preserveAspectRatio="none"
+           aria-label="Six month global gold price chart"></svg>
+
+      <div class="chart-tooltip" id="chartTooltip" hidden></div>
+      <div class="chart-loading" id="chartLoading">Loading chart history…</div>
+    </div>
+
+    <div class="chart-foot">
+      <span id="chartFootLeft">6M ago: monthly</span>
+      <span id="chartFootRight">→ weekly → 3-day → daily</span>
+    </div>
+    <div class="source" style="margin-top:8px"><span id="historySource">History source · XAUS daily XAU/USD closes</span> · touch chart for values</div>
+  </section>
+
+  <div class="diag" id="diag" hidden>
+    <div class="diag-row"><span>Global spot</span><span id="diagUS">Waiting</span></div>
+    <div class="diag-row"><span>Egypt 24K</span><span id="diagEG">Waiting</span></div>
+    <div class="diag-row"><span>USD / EGP</span><span id="diagFX">Waiting</span></div>
+    <div class="diag-row"><span>Chart history</span><span id="diagHistory">Waiting</span></div>
+    <div class="diag-row"><span>FX source</span><span id="diagFXMethod">Frankfurter · CBE</span></div>
+  </div>
+
+  <details>
+    <summary>How it is calculated</summary>
+    Egypt uses iSagha's published 24K selling price. USD/EGP comes directly from the
+    Frankfurter API pinned to the Central Bank of Egypt (CBE) provider. No exchange rate is inferred
+    from gold prices. Egypt USD = Egypt EGP ÷ the API-provided USD/EGP rate.
+    EG Premium = (Egypt USD per gram ÷ international spot USD per gram − 1) × 100.
+  </details>
+</section>
+
+<div class="tiny">Live prices refresh every 60 seconds · chart history uses direct + fallback feeds and is cached for 6 hours.</div>
+</div>
+
+<script src="./assets/app.js" defer></script>
+<script src="./assets/pwa.js" defer></script>
+</body>
+</html>
