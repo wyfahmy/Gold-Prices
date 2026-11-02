@@ -36,7 +36,10 @@ Clearing browser storage removes these saved readings.
 The service worker caches only explicitly listed app files. It never caches API
 or proxy requests. The original gold, CBE, iSagha and XAUS routes and their fallbacks
 are retained. Third-party availability and CORS policies can affect live readings.
-History is retained for six hours, matching V8. Chart labels show actual dates.
+History refreshes after six hours. The saved chart remains visible and usable while
+fresh history loads in the background. History routes race for the first valid
+response, with a 12-second timeout per route; losing requests are cancelled.
+Chart labels show actual dates.
 
 When changing an app file, bump `VERSION` in `service-worker.js` and update `SHELL`
 if files are added. A new worker downloads a complete shell; the user can apply it

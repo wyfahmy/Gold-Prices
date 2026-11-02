@@ -233,39 +233,34 @@ async function fetchHistory(){
     }
   ];
 
-  const errors=[];
-
-  for(const a of attempts){
-    try{
-      let payload;
-
-      if(a.kind==='json'){
-        payload=await getJSON(a.url,30000);
-      }else{
-        payload=await getText(a.url,30000);
+  // Race validated results so a stalled source cannot delay a healthy fallback.
+  const controllers=attempts.map(()=>new AbortController());
+  const timers=[];
+  try{
+    return await Promise.any(attempts.map(async(a,i)=>{
+      timers[i]=setTimeout(()=>controllers[i].abort(),12000);
+      try{
+        const response=await fetch(a.url,{cache:'no-store',signal:controllers[i].signal});
+        if(!response.ok) throw new Error('HTTP '+response.status);
+        const payload=a.kind==='json'?await response.json():await response.text();
+        const raw=parseHistoryPayload(payload);
+        const today=Date.now();
+        const start=today-190*86400000;
+        const six=raw.filter(p=>p.t>=start && p.t<=today+86400000);
+        if(six.length<20) throw new Error('Six-month history incomplete');
+        return {points:six,source:a.name};
+      }catch(e){
+        throw new Error(a.name+': '+(e.name==='AbortError'?'timed out':e.message));
+      }finally{
+        clearTimeout(timers[i]);
       }
-
-      const raw=parseHistoryPayload(payload);
-
-      const today=Date.now();
-      const start=today-(190*24*60*60*1000);
-      const six=raw.filter(p=>p.t>=start && p.t<=today+24*60*60*1000);
-
-      if(six.length<20){
-        throw new Error('Six-month history incomplete');
-      }
-
-      return {
-        points:six,
-        source:a.name
-      };
-
-    }catch(e){
-      errors.push(a.name+': '+(e.message||e));
-    }
+    }));
+  }catch(e){
+    throw new Error((e.errors||[e]).map(error=>error.message).join(' | '));
+  }finally{
+    timers.forEach(clearTimeout);
+    controllers.forEach(controller=>controller.abort());
   }
-
-  throw new Error(errors.join(' | '));
 }
 
 /*
@@ -565,14 +560,17 @@ async function refreshHistory(force=false){
     return;
   }
 
-  if(loading){
+  if(state.history){
+    renderChart(getRangePoints(state.history,state.selectedRange||'6M'));
+    $('historySource').textContent='History source · '+(state.historySource||'saved history')+' · saved chart, updating…';
+  }else if(loading){
     loading.className='chart-loading';
     loading.style.display='flex';
     loading.textContent='Loading chart history…';
   }
 
   historyPending=true;
-  setDiag('diagHistory','Loading…','warn');
+  setDiag('diagHistory',state.history?'Updating saved chart…':'Loading…','warn');
 
   try{
     const result=await fetchHistory();
